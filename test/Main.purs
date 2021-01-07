@@ -9,10 +9,12 @@ import Test.Unit.Assert as Assert
 import Test.Unit.Main (runTest)
 import Data.Map as Map
 import Data.Either (Either(..))
+import Data.Tuple (Tuple(..))
 import Transformers0 (eval0)
 import Transformers1 (eval1, runEval1)
 import Transformers2 (eval2, runEval2)
 import Transformers3 (eval3, runEval3)
+import Transformers4 (eval4, runEval4)
 import Data
 
 
@@ -46,6 +48,13 @@ basicSuite =
     test "eval3 success" do
       Assert.equal 
         (runEval3 Map.empty (eval3 example)) (Right (IntVal 18)) 
+
+    test "eval4 success" do
+      let 
+        initialState = 0
+        Tuple result count = runEval4 Map.empty initialState (eval4 example)
+      Assert.equal result (Right (IntVal 18)) 
+      Assert.equal count 8
 
 
 

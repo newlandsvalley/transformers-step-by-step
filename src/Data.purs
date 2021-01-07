@@ -37,7 +37,6 @@ instance showValue :: Show Value where
   show (IntVal i) = "Int: " <> (show i)
   show (FunVal env name exp) = "Func: " <> (show env) <> ": " <> name <> ": " <> (show exp)
 
--- derive instance genericValue  :: Generic Value _
 derive instance eqValue :: Eq Value
 
 -- mapping from names to values

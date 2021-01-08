@@ -16,9 +16,7 @@ import Transformers2 (eval2, runEval2)
 import Transformers3 (eval3, runEval3)
 import Transformers4 (eval4, runEval4)
 import Transformers5 (eval5, runEval5)
-import Data
-
-
+import Data 
 
 main :: Effect  Unit
 main = runTest do

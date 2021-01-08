@@ -9,12 +9,14 @@ import Data.Either (Either)
 import Data.Tuple (Tuple)
 import Data.Array (singleton)
 import Prelude
-import Control.Monad.Except.Trans (ExceptT, runExceptT)
+import Control.Monad.Except.Trans (class MonadThrow, ExceptT, runExceptT)
 import Control.Monad.Error.Class (throwError)
 import Control.Monad.Reader.Trans (ReaderT, ask, local, runReaderT)
+import Control.Monad.Reader.Class (class MonadReader)
 import Control.Monad.State.Trans (StateT, runStateT)
 import Control.Monad.State.Class (class MonadState, get, put)
 import Control.Monad.Writer.Trans (WriterT, runWriterT, tell)
+import Control.Monad.Writer.Class (class MonadTell)
 
 import Data.Map as Map
 import Data (Environment, Exp(..), Value(..))
@@ -40,7 +42,16 @@ tick = do
   put (st + 1)    
 
 -- log new variable definitions via Writer
-eval5 :: Exp -> Eval5 Value
+-- 
+-- we can also use the more specific signature (below) 
+-- eval5 :: Exp -> Eval5 Value
+eval5 :: forall m. 
+  MonadThrow String m => 
+  MonadReader Environment m => 
+  MonadState Int m =>
+  MonadTell (Array String) m =>
+  Exp -> 
+  m Value
 eval5 (Lit i ) = do 
   tick
   pure $ IntVal i

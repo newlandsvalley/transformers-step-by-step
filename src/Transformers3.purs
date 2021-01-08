@@ -7,9 +7,10 @@ import Data.Identity (Identity(..))
 import Data.Maybe (Maybe(..))
 import Data.Either (Either)
 import Prelude
-import Control.Monad.Except.Trans (ExceptT, runExceptT)
+import Control.Monad.Except.Trans (class MonadThrow, ExceptT, runExceptT)
 import Control.Monad.Error.Class (throwError)
 import Control.Monad.Reader.Trans (ReaderT, ask, local, runReaderT)
+import Control.Monad.Reader.Class (class MonadReader)
 
 import Data.Map as Map
 import Data (Environment, Exp(..), Value(..))
@@ -28,7 +29,19 @@ runEval3 env ev =
     a
 
 -- get the environment from the Reader
-eval3 :: Exp -> Eval3 Value
+--
+-- We can either continue defining the signature like this:
+--
+-- eval3 :: Exp -> Eval3 Value 
+--
+-- which is specific to the context in which we're using it here or we can
+-- use a more generalised signature which would allow it to be used in any
+-- monadic context. 
+eval3 :: forall m. 
+  MonadThrow String m => 
+  MonadReader Environment m => 
+  Exp -> 
+  m Value
 eval3 (Lit i ) = 
   pure $ IntVal i
 eval3 (Var n) = do

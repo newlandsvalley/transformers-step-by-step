@@ -8,9 +8,10 @@ import Data.Maybe (Maybe(..))
 import Data.Either (Either)
 import Data.Tuple (Tuple)
 import Prelude
-import Control.Monad.Except.Trans (ExceptT, runExceptT)
+import Control.Monad.Except.Trans (class MonadThrow, ExceptT, runExceptT)
 import Control.Monad.Error.Class (throwError)
 import Control.Monad.Reader.Trans (ReaderT, ask, local, runReaderT)
+import Control.Monad.Reader.Class (class MonadReader)
 import Control.Monad.State.Trans (StateT, runStateT)
 import Control.Monad.State.Class (class MonadState, get, put)
 
@@ -47,7 +48,15 @@ tick = do
   put (st + 1)    
 
 -- count each evaluation step and save to state
-eval4 :: Exp -> Eval4 Value
+-- 
+-- again, prefer the generalised signature to the specific one (below)
+-- eval4 :: Exp -> Eval4 Value
+eval4 :: forall m. 
+  MonadThrow String m => 
+  MonadReader Environment m => 
+  MonadState Int m =>
+  Exp -> 
+  m Value
 eval4 (Lit i ) = do 
   tick
   pure $ IntVal i

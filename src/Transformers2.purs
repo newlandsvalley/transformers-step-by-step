@@ -18,7 +18,9 @@ type Eval2  = ExceptT String Identity
 -- type Eval2 = Except String
 
 
-runEval2 :: forall a. Eval2 a -> Either String a
+runEval2 :: forall a. 
+  Eval2 a -> 
+  Either String a
 runEval2 ev = 
   let 
     (Identity a) = runExceptT ev 

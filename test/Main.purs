@@ -15,6 +15,7 @@ import Transformers1 (eval1, runEval1)
 import Transformers2 (eval2, runEval2)
 import Transformers3 (eval3, runEval3)
 import Transformers4 (eval4, runEval4)
+import Transformers5 (eval5, runEval5)
 import Data
 
 
@@ -45,17 +46,24 @@ basicSuite =
       Assert.equal
         (runEval2 (eval2 Map.empty unboundVariableExample)) (Left "unbound variable: x")
      
-    test "eval3 success" do
+    test "eval3" do
       Assert.equal 
         (runEval3 Map.empty (eval3 example)) (Right (IntVal 18)) 
 
-    test "eval4 success" do
+    test "eval4" do
       let 
         initialState = 0
         Tuple result count = runEval4 Map.empty initialState (eval4 example)
       Assert.equal result (Right (IntVal 18)) 
       Assert.equal count 8
 
+    test "eval5" do
+      let 
+        initialState = 0
+        Tuple (Tuple result log) count  = runEval5 Map.empty initialState (eval5 example)
+      Assert.equal result (Right (IntVal 18)) 
+      Assert.equal count 8
+      Assert.equal log [ "x" ]
 
 
 example :: Exp

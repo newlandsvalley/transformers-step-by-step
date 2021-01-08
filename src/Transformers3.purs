@@ -17,7 +17,10 @@ import Data (Environment, Exp(..), Value(..))
 type Eval3 = ReaderT Environment (ExceptT String Identity)
 
 
-runEval3 :: forall a. Environment -> Eval3 a -> Either String a
+runEval3 :: forall a. 
+  Environment -> 
+  Eval3 a -> 
+  Either String a
 runEval3 env ev = 
   let 
     (Identity a) = runExceptT (runReaderT ev env) 
